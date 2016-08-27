@@ -1,0 +1,58 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "com.example.edward.myapplication"
+        minSdkVersion 14
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        companyConfig {//读取明文 自动编译
+            storeFile file("F:\\传送门 - 桌面备份\\Android电子签名\\Ele_Paino.key")
+            //签名文件 在pc中的绝对路径 使用"\\"分割，不添加表示在当前gradle 目录下
+            storePassword "s11r6t53g22p0j00k1l8vxb"
+            keyAlias "fzfxyy"
+            keyPassword "fzfxyy20000"  //签名密码
+        }
+    }
+
+    buildTypes {
+        release {
+            applicationIdSuffix ".fuck"
+            signingConfig signingConfigs.companyConfig
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    //compile 'com.android.support:design:23.4.0'
+    //this has already contains httpClient Legacy for SDK 23
+    compile  'com.yanzhenjie:andserver:1.0.1'
+}
+
+//该task 支持的操作:自动编译debug版本 并安装到一个外部设备上
+task appdebug(type: Exec, dependsOn: 'installDebug') {
+    //dependsOn 也可以是 installmarket91Debug
+    description 'Installs the APK and runs the main activity: "gradlew installDebug"'
+    commandLine "${android.sdkDirectory}/platform-tools/adb", 'shell', 'am', 'start', '-n', 'com.example.edward.myapplication/.MainActivity'
+}
+
+task apprelease(type: Exec, dependsOn: 'installRelease') {
+    //dependsOn 也可以是 installmarket91Release
+    description 'Installs the APK and runs the main activity: "gradlew installRelease"'
+    commandLine "${android.sdkDirectory}/platform-tools/adb", 'shell', 'am', 'start', '-n', 'com.example.edward.myapplication.fuck/.MainActivity'
+}
